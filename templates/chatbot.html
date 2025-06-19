@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HealthCheck Chatbot</title>
+  <style>
+    body { font-family: Arial; margin: 40px auto; max-width: 600px; background: #f4f4f4; padding: 20px; border-radius: 10px; }
+    h1 { color: #0077cc; }
+    .chatbox { border: 1px solid #ccc; background: white; padding: 15px; height: 300px; overflow-y: auto; border-radius: 5px; }
+    .user { color: blue; margin-top: 10px; }
+    .bot { color: green; margin-top: 5px; }
+    input[type="text"] { width: 80%; padding: 10px; margin-top: 15px; }
+    button { padding: 10px 15px; background: #0077cc; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h1>💬 Chat with HealthCheck AI</h1>
+<div class="chatbox" id="chatbox">
+  <div class="bot">👋 Hi! Type like: "Heart 120, temp 101, oxygen 94"</div>
+</div>
+
+<input type="text" id="userInput" placeholder="Type your message here...">
+<button onclick="sendMessage()">Send</button>
+
+<div style="margin-top: 20px;">
+  <a href="/" style="text-decoration: none; padding: 10px 15px; background: #555; color: white; border-radius: 6px;">
+    🔙 Back to Mode Select
+  </a>
+</div>
+
+<script>
+function sendMessage() {
+  let input = document.getElementById("userInput");
+  let message = input.value;
+  if (!message.trim()) return;
+
+  let chatbox = document.getElementById("chatbox");
+  chatbox.innerHTML += "<div class='user'>You: " + message + "</div>";
+
+  fetch('/get_response', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: message })
+  })
+  .then(response => response.json())
+  .then(data => {
+    chatbox.innerHTML += "<div class='bot'>" + data.response + "</div>";
+    chatbox.scrollTop = chatbox.scrollHeight;
+  });
+
+  input.value = "";
+}
+</script>
+
+</body>
+</html>
